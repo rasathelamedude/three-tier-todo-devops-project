@@ -1,4 +1,4 @@
-# DONE. — Three-Tier Todo App with CI/CD Pipeline
+# Three-Tier Todo App with CI/CD Pipeline
 
 A production-grade, containerized three-tier web application built to showcase end-to-end DevOps practices. Features a React frontend, an Express + Bun TypeScript backend, and a MongoDB database — all orchestrated with Docker Compose and deployed through a Jenkins CI/CD pipeline with automated testing and security scanning.
 
@@ -8,8 +8,8 @@ A production-grade, containerized three-tier web application built to showcase e
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│                    Jenkins Pipeline                  │
-│  Test → Build Images → Docker Compose → Trivy Scan  │
+│                    Jenkins Pipeline                 │
+│  Test → Build Images → Trivy Scan → Docker Compose  │
 └──────────────────────┬──────────────────────────────┘
                        │
           ┌────────────▼────────────┐
@@ -18,7 +18,7 @@ A production-grade, containerized three-tier web application built to showcase e
              │          │           │
      ┌───────▼──┐ ┌─────▼────┐ ┌───▼──────┐
      │  React   │ │ Express  │ │ MongoDB  │
-     │ Frontend │ │ Backend  │ │  (Hub)   │
+     │ Frontend │ │ Backend  │ │ Database │
      │  :3000   │ │  :5000   │ │  :27017  │
      └──────────┘ └──────────┘ └──────────┘
 ```
@@ -39,7 +39,7 @@ A production-grade, containerized three-tier web application built to showcase e
 | Containerization  | Docker, Docker Compose                      |
 | CI/CD             | Jenkins, Jenkinsfile (declarative pipeline) |
 | Security Scanning | Trivy                                       |
-| Testing           | Bun Test (unit tests)                       |
+| Testing           | Vitest (unit tests)                         |
 
 ---
 
@@ -53,9 +53,9 @@ A production-grade, containerized three-tier web application built to showcase e
 │   │   ├── main.jsx            # React entry point
 │   │   └── index.css           # Tailwind directives + global styles
 │   ├── index.html
+│   ├── Dockerfile
 │   ├── vite.config.js
 │   ├── tailwind.config.js
-│   ├── postcss.config.js
 │   └── package.json
 │
 ├── backend/                    # Express + Bun API
@@ -71,6 +71,7 @@ A production-grade, containerized three-tier web application built to showcase e
 │   │       └── todo.routes.ts  # Route definitions
 │   ├── tests/
 │   │   └── todo.controller.test.ts  # Unit tests
+│   ├── Dockerfile
 │   ├── package.json
 │   └── tsconfig.json
 │
@@ -166,20 +167,6 @@ Then open [http://localhost:3000](http://localhost:3000).
 
 ---
 
-## Running Tests
-
-```bash
-cd backend
-bun test
-```
-
-Tests cover:
-
-- `GET /api/todos` — returns 200 with todo array, count matches data length
-- `POST /api/todos` — returns 201 with created todo on valid input, returns 400 on empty title
-
----
-
 ## CI/CD Pipeline
 
 The Jenkinsfile defines a declarative pipeline with the following stages:
@@ -188,8 +175,8 @@ The Jenkinsfile defines a declarative pipeline with the following stages:
 1. Checkout      → Pull source from GitHub
 2. Test          → Run bun test in /backend
 3. Build         → docker build for frontend and backend images
-4. Deploy        → docker compose up -d
-5. Scan          → trivy image scan on both built images
+4. Scan          → trivy image scan on both built images
+5. Deploy        → docker compose up -d
 6. Notify        → Pipeline result notification
 ```
 
@@ -197,13 +184,8 @@ The Jenkinsfile defines a declarative pipeline with the following stages:
 
 | Branch      | Behavior                                    |
 | ----------- | ------------------------------------------- |
-| `feature/*` | Runs tests only                             |
 | `dev`       | Tests → Build → Scan (no deploy)            |
 | `main`      | Full pipeline: Test → Build → Deploy → Scan |
-
----
-
-## Screenshots
 
 ---
 

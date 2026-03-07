@@ -1,8 +1,8 @@
 import express from "express";
 import cors from "cors";
-import { env } from "./config/env";
-import { connectDB } from "./config/db";
-import todoRoutes from "./src/routes/todo.routes";
+import { env } from "../config/env";
+import { connectDB } from "../config/db";
+import todoRoutes from "./routes/todo.routes";
 
 const app = express();
 
