@@ -6,12 +6,11 @@
     "strict": true,
     "esModuleInterop": true,
     "types": ["bun-types", "node"],
-
     "skipLibCheck": true,
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": "./",
     "resolveJsonModule": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "config/**/*", "tests/**/*"],
   "exclude": ["node_modules", "dist"]
 }
