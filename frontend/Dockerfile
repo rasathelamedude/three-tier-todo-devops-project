@@ -1,17 +1,15 @@
 # Builder stage for compiling react app
-FROM node:18-alpine AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
-RUN addgroup -S react && adduser -S react -G react
-
-COPY package*.json ./
+COPY package.json ./
 RUN npm install
 
 COPY . .
 
-RUN chown -R react:react /app
-USER react
+ARG VITE_API_URL=http://localhost:3100
+ENV VITE_API_URL=${VITE_API_URL}
 
 RUN npm run build
 
