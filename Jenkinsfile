@@ -34,9 +34,7 @@ pipeline{
     }
     stage('Deploy') {
       when{
-          expression {
-            BRANCH_NAME == 'main'
-          }
+          equals expected: 'main', actual: env.BRANCH_NAME
       }
       steps {
         echo 'Running the Docker images with Docker Compose...'
