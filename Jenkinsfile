@@ -38,9 +38,11 @@ pipeline{
   }
   post{
       success {
+        echo "Pipeline job finished!"
         echo "Sending success notifications..."
       }
       failure {
+        echo "Pipeline job finished!"
         echo "Sending failure notifications..."
       }
   }
