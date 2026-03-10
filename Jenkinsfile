@@ -15,11 +15,11 @@ pipeline{
     stage('Build docker images') {
       when {
         expression {
-          return env.BRANCH_NAME == 'dev' || env.BRANCH_NAME == 'main'
+          return env.BRANCH_NAME == 'main'
         }
       }
       steps {
-        echo 'Building...'
+        echo 'Building docker images...'
       }
     }
     stage('Test docker images') {
@@ -28,8 +28,11 @@ pipeline{
       }
     }
     stage("Push docker images to docker hub") {
+      when{
+          equals expected: 'main', actual: env.BRANCH_NAME
+      }
       steps{
-          echo "Pushing..."
+          echo "Pushing docker images..."
       }
     }
     stage('Deploy') {
@@ -37,7 +40,7 @@ pipeline{
           equals expected: 'main', actual: env.BRANCH_NAME
       }
       steps {
-        echo 'Running the Docker images with Docker Compose...'
+        echo 'Deploying the Docker images with Docker Compose...'
       }
     }
   }
