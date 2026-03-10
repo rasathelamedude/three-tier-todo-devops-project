@@ -1,14 +1,10 @@
 pipeline{
   agent any
-  environment {
-    CODE_CHANGES = getGitChanges()
-    DOCKER_HUB_CREDENTIALS = credentials('46c78a62-3b4a-4a17-a9a8-bc741207781d') // Docker hub 
-  }
   stages {
     stage('Build docker images') {
       when {
         expression {
-          ${{ BRANCH_NAME }} == 'dev' || ${{ BRANCH_NAME }} == 'main' || ${{ CODE_CHANGES }} == 'true'
+          return env.BRANCH_NAME == 'dev' || env.BRANCH_NAME == 'main' || env.CODE_CHANGES == 'true'
         }
       }
       steps {
@@ -32,7 +28,7 @@ pipeline{
           }
       }
       steps {
-        echo 'Running the docker images with docker compose...'
+        echo 'Running the Docker images with Docker Compose...'
       }
     }
   }
