@@ -1,10 +1,19 @@
 pipeline{
   agent any
   stages {
+    stage("Detect code changes") {
+      script {
+        echo "Detecting code changes..."
+
+        def hasChanges = !currentBuild.changeSets.isEmpty()
+        env.CODE_CHANGES = hasChanges.toString()
+        echo "Code changes detected: ${env.CODE_CHANGES}"
+      }
+    }
     stage('Build docker images') {
       when {
         expression {
-          return env.BRANCH_NAME == 'dev' || env.BRANCH_NAME == 'main' || env.CODE_CHANGES == 'true'
+          return env.BRANCH_NAME == 'dev' || env.BRANCH_NAME == 'main'
         }
       }
       steps {
