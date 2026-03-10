@@ -2,12 +2,14 @@ pipeline{
   agent any
   stages {
     stage("Detect code changes") {
-      script {
-        echo "Detecting code changes..."
+      steps{
+        script {
+          echo "Detecting code changes..."
 
-        def hasChanges = !currentBuild.changeSets.isEmpty()
-        env.CODE_CHANGES = hasChanges.toString()
-        echo "Code changes detected: ${env.CODE_CHANGES}"
+          def hasChanges = !currentBuild.changeSets.isEmpty()
+          env.CODE_CHANGES = hasChanges.toString()
+          echo "Code changes detected: ${env.CODE_CHANGES}"
+        }
       }
     }
     stage('Build docker images') {
