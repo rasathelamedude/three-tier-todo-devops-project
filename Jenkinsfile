@@ -20,6 +20,9 @@ pipeline{
       }
       steps {
         echo 'Building docker images...'
+        sh "docker build -t rasyar/todo-backend:1.0 ./backend"
+        sh "docker build -t rasyar/todo-frontend:1.0 ./frontend"
+        echo "Docker images built successfully!"
       }
     }
     stage('Test docker images') {
@@ -33,6 +36,16 @@ pipeline{
       }
       steps{
           echo "Pushing docker images..."
+          withCredentials([usernamePassword(
+              credentialsId: '46c78a62-3b4a-4a17-a9a8-bc741207781d',
+              usernameVariable: 'DOCKER_HUB_USERNAME',
+              passwordVariable: 'DOCKER_HUB_PASSWORD'
+          )]) {
+            sh "echo $DOCKER_HUB_PASSWORD | docker login -u $DOCKER_HUB_USERNAME --password-stdin"
+            sh "docker push rasyar/todo-backend:1.0"
+            sh "docker push rasyar/todo-frontend:1.0"
+          }
+          echo "Docker images pushed successfully!"
       }
     }
     stage('Deploy') {
