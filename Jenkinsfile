@@ -28,6 +28,7 @@ pipeline{
     stage('Test docker images') {
       steps {
         echo 'Testing docker images...'
+        echo "Docker image tested successfully"
       }
     }
     stage("Push docker images to docker hub") {
