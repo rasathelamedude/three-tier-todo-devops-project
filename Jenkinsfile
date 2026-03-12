@@ -22,7 +22,7 @@ pipeline{
         echo 'Building docker images...'
         sh "docker build -t rasyar/todo-backend:1.0 ./backend"
         sh "docker build -t rasyar/todo-frontend:1.0 ./frontend"
-        echo "Docker images built successfully."
+        echo "Docker images built successfully!"
       }
     }
     stage('Test docker images') {
