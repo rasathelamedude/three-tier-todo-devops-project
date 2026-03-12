@@ -121,8 +121,6 @@ function App() {
   const [error, setError] = useState(null);
   const inputRef = useRef(null);
 
-  console.log("Frontend application ", new Date().toLocaleTimeString());
-
   // Fetch todos on mount
   useEffect(() => {
     fetchTodos();
