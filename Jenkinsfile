@@ -69,11 +69,11 @@ pipeline{
                 scp -o StrictHostKeyChecking=no docker-compose.yml ec2-user@16.171.133.64:/home/ec2-user/app
 
                 ssh -o StrictHostKeyChecking=no ec2-user@16.171.133.64 << 'EOF'
-                  cd /home/ec2-user/app
-                  export IMAGE_TAG=${BUILD_NUMBER}
-                  docker-compose pull
-                  docker-compose down
-                  docker-compose up -d
+cd /home/ec2-user/app
+export IMAGE_TAG=${BUILD_NUMBER}
+docker compose pull
+docker compose down
+docker compose up -d
                 EOF
               """
           }
