@@ -15,7 +15,7 @@ services:
       - mongodb_volume:/data/db
 
   backend:
-    image: rasyar/todo-devops:${IMAGE_TAG}
+    image: rasyar/todo-backend:${IMAGE_TAG}
     container_name: todo-backend
     ports:
       - "3100:3100"

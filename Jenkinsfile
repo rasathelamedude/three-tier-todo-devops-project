@@ -65,17 +65,20 @@ pipeline{
       steps {
         script {
           sshagent(['SSH-from-jenkins']) {
-              sh """
-                scp -o StrictHostKeyChecking=no docker-compose.yml ec2-user@16.171.133.64:/home/ec2-user/app
+            withCredentials([file(credentialsId: 'three-tier-todo-project-env-vars', variable: 'ENV_FILE')]) {
+              sh "scp -o StrictHostKeyChecking=no ${ENV_FILE} ec2-user@16.171.133.64:/home/ec2-user/app/.env"
+              sh "scp -o StrictHostKeyChecking=no docker-compose.yml ec2-user@16.171.133.64:/home/ec2-user/app"
 
-                ssh -o StrictHostKeyChecking=no ec2-user@16.171.133.64 << 'EOF'
-cd /home/ec2-user/app
-export IMAGE_TAG=${BUILD_NUMBER}
-docker compose pull
-docker compose down
-docker compose up -d
-                EOF
+
+              sh """
+                ssh -o StrictHostKeyChecking=no ec2-user@16.171.133.64 \
+                'cd /home/ec2-user/app && \
+                export IMAGE_TAG=${BUILD_NUMBER} && \
+                docker compose --env-file .env pull && \
+                docker compose --env-file .env down && \
+                docker compose --env-file .env up -d' 
               """
+            }
           }
         }
       }
