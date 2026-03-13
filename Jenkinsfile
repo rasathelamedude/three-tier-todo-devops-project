@@ -27,7 +27,7 @@ pipeline{
         echo 'Building docker images...'
         sh "docker build -t rasyar/todo-backend:${BUILD_NUMBER} ./backend"
         sh "docker build -t rasyar/todo-frontend:${BUILD_NUMBER} ./frontend"
-        echo "Docker images built successfully!"
+        echo "Docker images built successfully."
       }
     }
     stage('Test docker images') {
