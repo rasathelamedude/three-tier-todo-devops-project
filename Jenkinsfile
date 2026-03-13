@@ -1,9 +1,10 @@
-options {
-  disableConcurrentBuilds()
-}
-
 pipeline{
   agent any
+
+  options {
+    disableConcurrentBuilds()
+  }
+
   stages {
     stage("Detect code changes") {
       steps{
