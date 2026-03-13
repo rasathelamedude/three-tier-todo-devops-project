@@ -15,7 +15,7 @@ services:
       - mongodb_volume:/data/db
 
   backend:
-    image: rasyar/todo-devops:1.0
+    image: rasyar/todo-devops:${IMAGE_TAG}
     container_name: todo-backend
     ports:
       - "3100:3100"
@@ -29,7 +29,7 @@ services:
     restart: on-failure
 
   frontend:
-    image: rasyar/todo-frontend:1.0
+    image: rasyar/todo-frontend:${IMAGE_TAG}
     container_name: todo-frontend
     ports:
       # 3000 on browser -> 80 nginx
