@@ -73,7 +73,10 @@ pipeline{
               sh """
                 ssh -o StrictHostKeyChecking=no ec2-user@16.171.133.64 \
                 'cd /home/ec2-user/app && \
+
                 export IMAGE_TAG=${BUILD_NUMBER} && \
+
+                docker system prune -f -a && \
                 docker compose --env-file .env pull && \
                 docker compose --env-file .env down && \
                 docker compose --env-file .env up -d' 
