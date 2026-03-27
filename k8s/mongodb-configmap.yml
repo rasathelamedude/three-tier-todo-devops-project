@@ -4,5 +4,5 @@ metadata:
   name: mongodb-configmap
   namespace: default
 data:
-  MONGO_HOST: mongodb
+  MONGO_HOST: mongodb-statefulset-0.mongodb-headless-service.default.svc.cluster.local 
   MONGO_DB: todo
