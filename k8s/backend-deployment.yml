@@ -73,7 +73,7 @@ spec:
               name: mongodb-secret
               key: MONGO_ROOT_PASSWORD
         - name: FRONTEND_URL
-          value: https://sometodo-frontend:3100
+          value: https://sometodoapp.com
         ports:
         - containerPort: 3100
 ---

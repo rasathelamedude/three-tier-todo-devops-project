@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-app
+  namespace: default
+  labels:
+    app: frontend-app
+spec:
+  selector:
+    matchLabels:
+      app: frontend-app
+  replicas: 2
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: frontend-app
+    spec:
+      containers:
+      - name: frontend-app
+        image: rasyar/todo-frontend:1.0
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 100m
+            memory: 100Mi
+        livenessProbe:
+          tcpSocket:
+            port: 80
+          initialDelaySeconds: 5
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+          successThreshold: 1
+          failureThreshold: 3
+          periodSeconds: 10
+        ports:
+        - containerPort: 80
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-app-service
+  namespace: default
+spec:
+  selector:
+    app: frontend-app
+  type: ClusterIP
+  ports:
+  - name: frontend-app-service
+    protocol: TCP
+    port: 80
+    targetPort: 80
