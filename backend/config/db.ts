@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 import { env } from "./env";
 
-export const connectDB = (): void => {
+export const connectDB = async (): Promise<void> => {
   const uri = `mongodb://${env.MONGO_USERNAME}:${env.MONGO_PASSWORD}@${env.MONGO_HOST}:27017/${env.MONGO_DB}?authSource=admin`;
 
-  mongoose.connect(uri, {
+  await mongoose.connect(uri, {
     serverSelectionTimeoutMS: 5000,
     retryWrites: true,
   });
