@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: frontend-app
-        image: rasyar/todo-frontend:TAG_PLACEHOLDER
+        image: rasyar/todo-frontend:5.0
         resources:
           requests:
             cpu: 50m

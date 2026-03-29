@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: backend-app
-        image: rasyar/todo-backend:TAG_PLACEHOLDER
+        image: rasyar/todo-backend:18.0
         resources:
           requests:
             cpu: 100m
@@ -74,7 +74,7 @@ spec:
               name: mongodb-secret
               key: MONGO_ROOT_PASSWORD
         - name: FRONTEND_URL
-          value: https://sometodoapp.com
+          value: http://13.63.185.117.nip.io/
         ports:
         - containerPort: 3100
 ---
