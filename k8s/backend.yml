@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: backend-app
-        image: rasyar/todo-backend:18.0
+        image: rasyar/todo-backend:19.0
         resources:
           requests:
             cpu: 100m
