@@ -24,10 +24,11 @@ app.use("/api/todos", todoRoutes);
 
 const startServer = async () => {
   console.log("Starting server...");
-  await connectDB();
   app.listen(env.PORT, () => {
     console.log(`Server running on port ${env.PORT}`);
   });
+  
+  connectDB();
 };
 
 startServer();

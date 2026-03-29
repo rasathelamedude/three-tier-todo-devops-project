@@ -1,13 +1,19 @@
 import mongoose from "mongoose";
 import { env } from "./env";
 
-export const connectDB = async (): Promise<void> => {
-  try {
-    const uri = `mongodb://${env.MONGO_USERNAME}:${env.MONGO_PASSWORD}@${env.MONGO_HOST}:27017/${env.MONGO_DB}?authSource=admin`;
-    await mongoose.connect(uri);
+export const connectDB = (): void => {
+  const uri = `mongodb://${env.MONGO_USERNAME}:${env.MONGO_PASSWORD}@${env.MONGO_HOST}:27017/${env.MONGO_DB}?authSource=admin`;
+
+  mongoose.connect(uri, {
+    serverSelectionTimeoutMS: 5000,
+    retryWrites: true,
+  });
+
+  mongoose.connection.on("connected", () => {
     console.log("MongoDB connected successfully");
-  } catch (error) {
-    console.error("MongoDB connection error:", error);
-    process.exit(1);
-  }
+  });
+
+  mongoose.connection.on("error", (err) => {
+    console.error("MongoDB connection error:", err);
+  });
 };
