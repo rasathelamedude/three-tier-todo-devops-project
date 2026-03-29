@@ -1,6 +1,11 @@
 pipeline{
   agent any
 
+  environment {
+    BACKEND_DOCKER_IMAGE = "rasyar/todo-backend"
+    FRONTEND_DOCKER_IMAGE = "rasyar/todo-frontend"
+  }
+
   options {
     disableConcurrentBuilds()
   }
@@ -25,8 +30,8 @@ pipeline{
       }
       steps {
         echo 'Building docker images...'
-        sh "docker build -t rasyar/todo-backend:${BUILD_NUMBER} ./backend"
-        sh "docker build -t rasyar/todo-frontend:${BUILD_NUMBER} ./frontend"
+        sh "docker build -t ${env.BACKEND_DOCKER_IMAGE}:${BUILD_NUMBER} ./backend"
+        sh "docker build -t ${env.FRONTEND_DOCKER_IMAGE}:${BUILD_NUMBER} ./frontend"
         echo "Docker images built successfully!"
       }
     }
@@ -50,8 +55,8 @@ pipeline{
               passwordVariable: 'DOCKER_HUB_PASSWORD'
           )]) {
             sh "echo $DOCKER_HUB_PASSWORD | docker login -u $DOCKER_HUB_USERNAME --password-stdin"
-            sh "docker push rasyar/todo-backend:${BUILD_NUMBER}"
-            sh "docker push rasyar/todo-frontend:${BUILD_NUMBER}"
+            sh "docker push ${env.BACKEND_DOCKER_IMAGE}:${BUILD_NUMBER}"
+            sh "docker push ${env.FRONTEND_DOCKER_IMAGE}:${BUILD_NUMBER}"
           }
           echo "Docker images pushed successfully!"
       }
@@ -64,24 +69,14 @@ pipeline{
       }
       steps {
         script {
-          sshagent(['SSH-from-jenkins']) {
-            withCredentials([file(credentialsId: 'three-tier-todo-project-env-vars', variable: 'ENV_FILE')]) {
-              sh "scp -o StrictHostKeyChecking=no ${ENV_FILE} ec2-user@16.171.133.64:/home/ec2-user/app/.env"
-              sh "scp -o StrictHostKeyChecking=no docker-compose.yml ec2-user@16.171.133.64:/home/ec2-user/app"
-
-
-              sh """
-                ssh -o StrictHostKeyChecking=no ec2-user@16.171.133.64 \
-                'cd /home/ec2-user/app && \
-
-                export IMAGE_TAG=${BUILD_NUMBER} && \
-
-                docker system prune -f -a && \
-                docker compose --env-file .env pull && \
-                docker compose --env-file .env down && \
-                docker compose --env-file .env up -d' 
-              """
-            }
+          withCredentials([file(credentialsId: 'k3s-kubeconfig', variable: 'KUBECONFIG')]) {
+            echo "Deploying to Kubernetes cluster..."
+            
+            sh "kubectl apply -f k8s/"
+            sh "kubectl set image deployment/backend-app backend-app=${env.BACKEND_DOCKER_IMAGE}:${BUILD_NUMBER}"
+            sh "kubectl set image deployment/frontend-app frontend-app=${env.FRONTEND_DOCKER_IMAGE}:${BUILD_NUMBER}"
+            sh "kubectl rollout status deployment/backend-app --timeout=60s"
+            sh "kubectl rollout status deployment/frontend-app --timeout=60s"
           }
         }
       }

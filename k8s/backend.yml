@@ -22,16 +22,17 @@ spec:
     spec:
       containers:
       - name: backend-app
-        image: rasyar/todo-backend:1.0
+        image: rasyar/todo-backend:TAG_PLACEHOLDER
         resources:
           requests:
             cpu: 100m
-            memory: 100Mi
+            memory: 150Mi
           limits:
-            cpu: 100m
-            memory: 100Mi
+            cpu: 300m
+            memory: 300Mi
         livenessProbe:
-          tcpSocket:
+          httpGet:
+            path: /health
             port: 3100
           initialDelaySeconds: 5
           timeoutSeconds: 5

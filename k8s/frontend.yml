@@ -22,16 +22,17 @@ spec:
     spec:
       containers:
       - name: frontend-app
-        image: rasyar/todo-frontend:1.0
+        image: rasyar/todo-frontend:TAG_PLACEHOLDER
         resources:
           requests:
-            cpu: 100m
+            cpu: 50m
             memory: 100Mi
           limits:
-            cpu: 100m
-            memory: 100Mi
+            cpu: 200m
+            memory: 200Mi
         livenessProbe:
-          tcpSocket:
+          httpGet:
+            path: /
             port: 80
           initialDelaySeconds: 5
           timeoutSeconds: 5
