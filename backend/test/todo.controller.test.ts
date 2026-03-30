@@ -88,7 +88,7 @@ describe("getTodos controller", () => {
 
   it("should return empty array when no todos exist", async () => {
     const { Todo } = await import("../src/models/todo.model");
-    vi.mocked(Todo.find).mockReturnValueOnce({
+    (Todo.find as any).mockReturnValueOnce({
       sort: vi.fn().mockResolvedValueOnce([]),
     } as any);
 
@@ -110,7 +110,7 @@ describe("getTodos controller", () => {
   it("should handle database errors gracefully", async () => {
     const { Todo } = await import("../src/models/todo.model");
     const dbError = new Error("Database connection failed");
-    vi.mocked(Todo.find).mockReturnValueOnce({
+    (Todo.find as any).mockReturnValueOnce({
       sort: vi.fn().mockRejectedValueOnce(dbError),
     } as any);
 
@@ -194,7 +194,7 @@ describe("createTodo controller", () => {
 
     await createTodo(req, res);
 
-    expect(vi.mocked(Todo.create)).toHaveBeenCalledWith({
+    expect(Todo.create as any).toHaveBeenCalledWith({
       title: "New Task",
     });
   });
@@ -211,7 +211,7 @@ describe("createTodo controller", () => {
   it("should handle database errors during creation", async () => {
     const { Todo } = await import("../src/models/todo.model");
     const dbError = new Error("Database write failed");
-    vi.mocked(Todo.create).mockRejectedValueOnce(dbError);
+    (Todo.create as any).mockRejectedValueOnce(dbError);
 
     const req = mockRequest({ title: "Test Task" });
     const res = mockResponse();
