@@ -22,6 +22,14 @@ pipeline{
         }
       }
     }
+    stage('Run tests') {
+      steps {
+        echo "Running tests..."
+        sh "cd backend && npm run test"
+        sh "cd frontend && npm run test"
+        echo "Tests completed successfully!"
+      }
+    }
     stage('Build docker images') {
       when {
         expression {
@@ -33,12 +41,6 @@ pipeline{
         sh "docker build -t ${env.BACKEND_DOCKER_IMAGE}:${BUILD_NUMBER} ./backend"
         sh "docker build -t ${env.FRONTEND_DOCKER_IMAGE}:${BUILD_NUMBER} ./frontend"
         echo "Docker images built successfully!"
-      }
-    }
-    stage('Test docker images') {
-      steps {
-        echo 'Testing docker images...'
-        echo "Docker image tested successfully."
       }
     }
     stage("Push docker images to docker hub") {
