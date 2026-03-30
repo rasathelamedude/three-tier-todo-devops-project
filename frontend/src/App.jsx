@@ -12,7 +12,6 @@ function TodoItem({ todo, index }) {
     return () => clearTimeout(timer);
   }, [index]);
 
-  console.log("Rendering TodoItem:", todo.title, "Visible:", visible);
   const date = new Date(todo.createdAt);
   const formatted = date.toLocaleDateString("en-US", {
     month: "short",
