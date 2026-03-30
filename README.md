@@ -196,8 +196,8 @@ The Jenkinsfile defines a declarative multibranch pipeline. A GitHub webhook tri
 
 ```
 1. Detect changes    → sets CODE_CHANGES env var
-2. Build images      → docker build with VITE_API_URL build-arg
-3. Test              → bun test (Vitest unit tests)
+2. Test              → bun test (Vitest unit tests)
+3. Build images      → docker build with VITE_API_URL build-arg
 4. Push to DockerHub → tagged with BUILD_NUMBER
 5. Deploy to k3s     → kubectl apply + kubectl set image
 6. Rollout status    → blocks until deployment is healthy
@@ -306,14 +306,14 @@ tls-san:
 
 Two EC2 instances are used:
 
-**Jenkins EC2:**
+**Jenkins EC2 (c7i-flex.large):**
 
 - Jenkins runs as a Docker container (`jenkins/jenkins:lts`)
 - Docker socket mounted so the pipeline can run `docker build` and `docker push`
 - `kubectl` installed inside the Jenkins container
 - k3s kubeconfig stored as a Jenkins Secret File credential
 
-**k3s EC2 (t3.small):**
+**k3s EC2 (c7i-flex.large):**
 
 - k3s installed directly — lightweight single-node Kubernetes
 - Elastic IP assigned for stable webhook and kubectl access
