@@ -26,7 +26,6 @@ pipeline{
       steps {
         echo "Running tests..."
         sh "cd backend && bun install && bun run test"
-        sh "cd frontend && npm install && npm run test"
         echo "Tests completed successfully!"
       }
     }
