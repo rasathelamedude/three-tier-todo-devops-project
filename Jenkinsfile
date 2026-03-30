@@ -23,15 +23,10 @@ pipeline{
       }
     }
     stage('Run tests') {
-      agent {
-          docker {
-            image 'node:22-alpine'
-          }
-      }
       steps {
         echo "Running tests..."
-        sh "cd backend && npm run test"
-        sh "cd frontend && npm run test"
+        sh "cd backend && bun install && bun run test"
+        sh "cd frontend && npm install && npm run test"
         echo "Tests completed successfully!"
       }
     }
