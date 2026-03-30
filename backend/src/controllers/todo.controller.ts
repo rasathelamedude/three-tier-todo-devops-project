@@ -47,3 +47,35 @@ export const createTodo = async (
     });
   }
 };
+
+export const updateTodo = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const { completed } = req.body;
+
+    if (typeof completed !== "boolean") {
+      res
+        .status(400)
+        .json({ success: false, message: "Invalid 'completed' value" });
+      return;
+    }
+
+    const todo = await Todo.findByIdAndUpdate(id, { completed }, { new: true });
+
+    if (!todo) {
+      res.status(404).json({ success: false, message: "Todo not found" });
+      return;
+    }
+
+    res.status(200).json({ success: true, data: todo });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to update todo",
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
+};

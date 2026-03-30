@@ -9,7 +9,7 @@ const app = express();
 app.use(
   cors({
     origin: env.FRONTEND_URL,
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PATCH"],
     allowedHeaders: ["Content-Type"],
   }),
 );

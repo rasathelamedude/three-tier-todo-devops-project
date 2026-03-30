@@ -4,7 +4,7 @@ const API_BASE = import.meta.env.VITE_API_URL
   ? `${import.meta.env.VITE_API_URL}/api/todos`
   : "/api/todos";
 
-function TodoItem({ todo, index }) {
+function TodoItem({ todo, index, onToggle }) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -39,10 +39,13 @@ function TodoItem({ todo, index }) {
         {/* Status dot */}
         <div className="shrink-0 flex items-center justify-center">
           <div
+            onClick={() => onToggle?.(todo._id)}
+            role="button"
+            tabIndex={0}
             className={`w-4 h-4 rounded-full border-2 transition-all duration-300 flex items-center justify-center ${
               todo.completed
                 ? "bg-emerald-500 border-emerald-500"
-                : "border-slate-300 bg-transparent group-hover:border-blue-400"
+                : "border-slate-300 bg-transparent group-hover:border-blue-400 hover:cursor-pointer"
             }`}
           >
             {todo.completed && (
@@ -179,6 +182,38 @@ function App() {
       setError(err.message || "Failed to fetch tasks");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleToggle = async (id) => {
+    setError(null);
+    const todo = todos.find((t) => t._id === id);
+    if (!todo) return;
+
+    const newCompleted = !todo.completed;
+
+    // optimistic update
+    setTodos((prev) =>
+      prev.map((t) => (t._id === id ? { ...t, completed: newCompleted } : t)),
+    );
+
+    try {
+      const res = await fetch(`${API_BASE}/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ completed: newCompleted }),
+      });
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
+      const json = await res.json();
+      setTodos((prev) => prev.map((t) => (t._id === id ? json.data : t)));
+    } catch (err) {
+      setError(err.message || "Failed to update task");
+      // revert optimistic update
+      setTodos((prev) =>
+        prev.map((t) =>
+          t._id === id ? { ...t, completed: todo.completed } : t,
+        ),
+      );
     }
   };
 
@@ -344,7 +379,12 @@ function App() {
               {/* List Card */}
               <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                 {todos.map((todo, i) => (
-                  <TodoItem key={todo._id} todo={todo} index={i} />
+                  <TodoItem
+                    key={todo._id}
+                    todo={todo}
+                    index={i}
+                    onToggle={handleToggle}
+                  />
                 ))}
               </div>
             </div>

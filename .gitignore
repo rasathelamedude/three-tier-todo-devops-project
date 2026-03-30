@@ -24,4 +24,4 @@ Thumbs.db
 *.swp
 *.swo
 
-k8s/k3s-config.yaml
+k3s-config.yaml
